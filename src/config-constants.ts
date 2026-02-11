@@ -1,0 +1,18 @@
+export default {
+  databaseName: 'DB_NAME',
+  databaseHost: 'DB_HOST',
+  databasePassword: 'DB_PASS',
+  databaseUsername: 'DB_USER',
+  databasePort: 'DB_PORT',
+  databaseSync: 'DB_SYNC',
+  appPort: 'BACK_PORT',
+  entraAppId: 'ENTRA_APP_ID',
+  entraAppSecret: 'ENTRA_APP_SECRET',
+  entraAppCallbackUrl: 'ENTRA_APP_CALLBACK_URL',
+  skolaeMicrosoftTenantId: 'SKOLAE_MICROSOFT_TENANT_ID',
+  frontendUrl: 'FRONTEND_URL',
+  jwtSecret: 'JWT_SECRET',
+  jwtExpiresInSeconds: 'JWT_EXPIRES_IN_SECONDS',
+  jwtRefreshSecret: 'JWT_REFRESH_SECRET',
+  jwtMaxSessionTimeSeconds: 'JWT_MAX_SESSION_TIME_SECONDS',
+};
