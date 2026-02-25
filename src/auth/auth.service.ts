@@ -8,16 +8,14 @@ import { verify } from 'argon2';
 export class AuthService {
   constructor(private readonly usersService: UsersService) {}
 
-  validateUserForAuth(args: {
+  async validateUserForAuth(args: {
     accessToken: string;
     refreshToken: string;
     profile: PassportMicrosoftProfile;
     done: (err: any, user: any) => void;
   }) {
-    // Supposedly, this validation is already done using Skolae's Microsoft tenant ID
-    // Perhaps some other validation could be done
-    if (!args.profile.userPrincipalName.endsWith('@myskolae.fr')) {
-      return args.done(null, false);
+    if (await this.usersService.isUserDisabled(args.profile.id)) {
+      return args.done(new UnauthorizedException('User is disabled'), null);
     }
 
     return args.done(null, args.profile);

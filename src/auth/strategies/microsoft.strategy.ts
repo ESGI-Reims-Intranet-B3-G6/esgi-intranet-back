@@ -22,13 +22,13 @@ export class MicrosoftStrategy extends PassportStrategy(Strategy, 'microsoft') {
     });
   }
 
-  validate(
+  async validate(
     accessToken: string,
     refreshToken: string,
     profile: PassportMicrosoftProfile,
     done: (err: any, user: any) => void
   ) {
-    return this.authService.validateUserForAuth({
+    return await this.authService.validateUserForAuth({
       accessToken,
       refreshToken,
       profile,

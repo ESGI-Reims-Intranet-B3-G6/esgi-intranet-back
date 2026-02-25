@@ -13,7 +13,7 @@ import ConfigNames from '../config-constants';
         username: configService.getOrThrow<string>(ConfigNames.databaseUsername),
         password: configService.getOrThrow<string>(ConfigNames.databasePassword),
         database: configService.getOrThrow<string>(ConfigNames.databaseName),
-        synchronize: configService.getOrThrow<boolean>(ConfigNames.databaseSync),
+        synchronize: configService.getOrThrow(ConfigNames.databaseSync) === 'true',
         autoLoadEntities: true,
       }),
       inject: [ConfigService],

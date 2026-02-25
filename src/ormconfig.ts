@@ -14,7 +14,7 @@ export default new DataSource({
   database: configService.getOrThrow<string>(ConfigNames.databaseName),
   username: configService.getOrThrow<string>(ConfigNames.databaseUsername),
   password: configService.getOrThrow<string>(ConfigNames.databasePassword),
-  synchronize: configService.getOrThrow<boolean>(ConfigNames.databaseSync),
+  synchronize: configService.getOrThrow(ConfigNames.databaseSync) === 'true',
   migrations: ['src/migrations/*.ts'],
   entities: ['**/entities/*.entity.ts'],
 });

@@ -34,10 +34,13 @@ export class JwtAuthService {
       maxAge: Number(this.configService.get(ConfigConstants.jwtExpiresInSeconds)) * 1000,
     });
 
-    let refreshTokenExpirationSeconds = this.configService.getOrThrow<number>(ConfigConstants.jwtMaxSessionTimeSeconds);
+    let refreshTokenExpirationSeconds = this.configService.getOrThrow<number>(
+      ConfigConstants.jwtMaxSessionTimeSeconds
+    );
 
     if (isRefresh) {
-      const expirationDate = Math.floor(user.lastLogin.getTime() / 1000) + +refreshTokenExpirationSeconds;
+      const expirationDate =
+        Math.floor(user.lastLogin.getTime() / 1000) + +refreshTokenExpirationSeconds;
 
       const currentDate = Math.floor(new Date().getTime() / 1000);
       refreshTokenExpirationSeconds = expirationDate - currentDate;

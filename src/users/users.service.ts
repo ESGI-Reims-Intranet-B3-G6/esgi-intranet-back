@@ -9,25 +9,38 @@ export class UsersService {
   constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) {}
 
   async createOrUpdateUser(user: PassportMicrosoftProfile): Promise<User> {
+    const databaseUser = await this.userRepository.findOne({
+      where: { id: user.id },
+      withDeleted: true,
+    });
+
+    if (databaseUser?.disabledAt) {
+      throw new ForbiddenException('User is disabled');
+    }
+
     const newUser: User = {
       id: user.id,
       email: user.userPrincipalName,
       firstName: user.name.givenName,
       lastName: user.name.familyName,
       lastLogin: new Date(),
+      userRole: databaseUser?.userRole ? databaseUser.userRole : 'ETUDIANT',
       refreshToken: null,
     };
 
-    const disabledUserTest = await this.userRepository.findOne({
-      where: { id: user.id, disabledAt: Not(IsNull()) },
+    return await this.userRepository.save(newUser);
+  }
+
+  async isUserDisabled(userId: string): Promise<boolean> {
+    const user = await this.userRepository.findOne({
+      where: {
+        id: userId,
+        disabledAt: Not(IsNull()),
+      },
       withDeleted: true,
     });
 
-    if (disabledUserTest) {
-      throw new ForbiddenException('User is disabled');
-    }
-
-    return await this.userRepository.save(newUser);
+    return !!user?.disabledAt;
   }
 
   async getUserById(userId: string): Promise<User | null> {

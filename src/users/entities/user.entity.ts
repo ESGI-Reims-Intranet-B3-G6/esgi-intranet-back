@@ -1,4 +1,5 @@
 import { Column, DeleteDateColumn, Entity, PrimaryColumn } from 'typeorm';
+import type { Role } from '../types/role.type';
 
 @Entity('users')
 export class User {
@@ -19,6 +20,9 @@ export class User {
 
   @Column({ type: 'timestamp without time zone' })
   lastLogin: Date;
+
+  @Column({ default: 'ETUDIANT' })
+  userRole: Role;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   refreshToken: string | null;
