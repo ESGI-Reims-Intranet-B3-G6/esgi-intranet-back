@@ -26,13 +26,10 @@ export class AuthController {
   @UseGuards(MicrosoftAuthGuard)
   login() {}
 
-  @Get('test')
+  @Get('')
   @UseGuards(JwtAuthGuard)
-  test(@CurrentUser() user: User, @Req() req: Request) {
-    return {
-      message: `Hello, ${user.firstName}!`,
-      user: req.user,
-    };
+  userDetails(@CurrentUser() user: User) {
+    return user.toPublic();
   }
 
   @Get('microsoft')

@@ -18,7 +18,7 @@ export class UsersService {
       throw new ForbiddenException('User is disabled');
     }
 
-    const newUser: User = {
+    const newUser: User = new User({
       id: user.id,
       email: user.userPrincipalName,
       firstName: user.name.givenName,
@@ -26,7 +26,7 @@ export class UsersService {
       lastLogin: new Date(),
       userRole: databaseUser?.userRole ? databaseUser.userRole : 'ETUDIANT',
       refreshToken: null,
-    };
+    });
 
     return await this.userRepository.save(newUser);
   }
