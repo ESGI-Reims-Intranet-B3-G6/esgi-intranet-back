@@ -18,7 +18,7 @@ export class JwtAuthService {
 
   async login(user: User, response: Response, isRefresh: boolean = false) {
     const payload: JwtPayload = {
-      sub: user.id,
+      sub: user.id!,
       email: user.email,
     };
 
@@ -40,7 +40,7 @@ export class JwtAuthService {
 
     if (isRefresh) {
       const expirationDate =
-        Math.floor(user.lastLogin.getTime() / 1000) + +refreshTokenExpirationSeconds;
+        Math.floor(user.lastLogin!.getTime() / 1000) + +refreshTokenExpirationSeconds;
 
       const currentDate = Math.floor(new Date().getTime() / 1000);
       refreshTokenExpirationSeconds = expirationDate - currentDate;
@@ -53,7 +53,7 @@ export class JwtAuthService {
 
     const hashedRefreshToken = await hash(refreshToken);
 
-    await this.usersService.updateRefreshToken(user.id, hashedRefreshToken);
+    await this.usersService.updateRefreshToken(user.id!, hashedRefreshToken);
 
     response.cookie('refresh', refreshToken, {
       httpOnly: true,
@@ -78,6 +78,6 @@ export class JwtAuthService {
       expires: new Date(0),
     });
 
-    await this.usersService.updateRefreshToken(user.id, null);
+    await this.usersService.updateRefreshToken(user.id!, null);
   }
 }

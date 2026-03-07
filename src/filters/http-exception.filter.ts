@@ -1,11 +1,12 @@
 import { Response } from 'express';
 import {
-  ExceptionFilter,
-  Catch,
   ArgumentsHost,
-  Logger,
+  BadRequestException,
+  Catch,
+  ExceptionFilter,
   HttpException,
   HttpStatus,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 
@@ -29,6 +30,16 @@ export class HttpExceptionFilter implements ExceptionFilter {
       statusCode = exception.getStatus();
       if (exception instanceof UnauthorizedException && exception.cause) {
         details = exception.cause;
+      }
+    }
+
+    if (exception instanceof BadRequestException) {
+      try {
+        details = {
+          messages: (exception.getResponse() as { message: string[] }).message,
+        };
+      } catch {
+        details = null;
       }
     }
 

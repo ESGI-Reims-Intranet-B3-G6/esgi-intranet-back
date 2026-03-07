@@ -7,23 +7,25 @@ export class User {
     Object.assign(this, partial);
   }
 
-  @PrimaryColumn({ type: 'varchar', length: 36, unique: true })
-  id: string;
+  // TODO: When switching from the UPN to the ID to create database users, make this the primary column again
+  //@PrimaryColumn({ type: 'varchar', length: 36, unique: true })
+  @Column({ type: 'varchar', length: 36, nullable: true })
+  id?: string;
 
-  @Column()
+  @PrimaryColumn({ unique: true })
   email: string;
 
-  @Column()
-  firstName: string;
+  @Column({ nullable: true })
+  firstName?: string;
 
-  @Column()
-  lastName: string;
+  @Column({ nullable: true })
+  lastName?: string;
 
   @DeleteDateColumn()
   disabledAt?: Date;
 
-  @Column({ type: 'timestamp without time zone' })
-  lastLogin: Date;
+  @Column({ type: 'timestamp without time zone', nullable: true })
+  lastLogin?: Date;
 
   @Column({ default: 'GUEST' })
   userRole: Role;
@@ -33,11 +35,11 @@ export class User {
 
   toPublic() {
     return {
-      id: this.id,
+      id: this.id ?? null,
       email: this.email,
-      firstName: this.firstName,
-      lastName: this.lastName,
-      lastLogin: this.lastLogin.toISOString(),
+      firstName: this.firstName ?? null,
+      lastName: this.lastName ?? null,
+      lastLogin: this.lastLogin ? this.lastLogin.toISOString() : null,
       userRole: this.userRole,
       disabledAt: this.disabledAt ?? null,
     };

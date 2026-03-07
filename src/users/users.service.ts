@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Not, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -37,6 +37,27 @@ export class UsersService {
     return await this.userRepository.save(newUser);
   }
 
+  async createUser(user: Partial<User>) {
+    const databaseUser = await this.userRepository.findOne({
+      // TODO: the search for an existing user should use the user ID instead
+      // of the UPN. This is disabled so that users can be added via their UPN
+      // instead of requiring users to get the user's ID.
+      // Whenever the application will be ran within the organization,
+      // the backend will be able to retrieve the user ID from the UPN directly.
+      //where: { id: user.id },
+      where: { email: user.email },
+      withDeleted: true,
+    });
+
+    if (databaseUser) {
+      throw new BadRequestException('User already exists');
+    }
+
+    const newUser = new User(user);
+
+    return await this.userRepository.save(newUser);
+  }
+
   async isUserDisabled(userId: string): Promise<boolean> {
     const user = await this.userRepository.findOne({
       where: {
@@ -62,6 +83,6 @@ export class UsersService {
   }
 
   async listUsers(): Promise<User[]> {
-    return await this.userRepository.find();
+    return await this.userRepository.find({ withDeleted: true });
   }
 }
