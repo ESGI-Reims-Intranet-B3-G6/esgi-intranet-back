@@ -25,7 +25,7 @@ export class User {
   @Column({ type: 'timestamp without time zone' })
   lastLogin: Date;
 
-  @Column({ default: 'ETUDIANT' })
+  @Column({ default: 'GUEST' })
   userRole: Role;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
@@ -39,6 +39,7 @@ export class User {
       lastName: this.lastName,
       lastLogin: this.lastLogin.toISOString(),
       userRole: this.userRole,
+      disabledAt: this.disabledAt ?? null,
     };
   }
 }

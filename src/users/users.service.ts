@@ -10,7 +10,13 @@ export class UsersService {
 
   async createOrUpdateUser(user: PassportMicrosoftProfile): Promise<User> {
     const databaseUser = await this.userRepository.findOne({
-      where: { id: user.id },
+      // TODO: the search for an existing user should use the user ID instead
+      // of the UPN. This is disabled so that users can be added via their UPN
+      // instead of requiring users to get the user's ID.
+      // Whenever the application will be ran within the organization,
+      // the backend will be able to retrieve the user ID from the UPN directly.
+      //where: { id: user.id },
+      where: { email: user.userPrincipalName },
       withDeleted: true,
     });
 
@@ -24,7 +30,7 @@ export class UsersService {
       firstName: user.name.givenName,
       lastName: user.name.familyName,
       lastLogin: new Date(),
-      userRole: databaseUser?.userRole ? databaseUser.userRole : 'ETUDIANT',
+      userRole: databaseUser?.userRole ? databaseUser.userRole : 'GUEST',
       refreshToken: null,
     });
 
@@ -53,5 +59,9 @@ export class UsersService {
 
   async updateRefreshToken(userId: string, refreshToken: string | null): Promise<void> {
     await this.userRepository.update({ id: userId }, { refreshToken });
+  }
+
+  async listUsers(): Promise<User[]> {
+    return await this.userRepository.find();
   }
 }

@@ -1,13 +1,10 @@
 import { Controller, Get, HttpException, Req, Res, UseGuards } from '@nestjs/common';
 import { MicrosoftAuthGuard } from './guards/microsoft-auth.guard';
-import { AuthService } from './auth.service';
-import { MicrosoftStrategy } from './strategies/microsoft.strategy';
 import type { Request, Response } from 'express';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { JwtAuthService } from './jwt-auth.service';
 import { PassportMicrosoftProfile } from './passport-microsoft-profile';
-import { UsersService } from '../users/users.service';
-import { ConfigService } from '@nestjs/config';
+import { UsersService } from '../users';
 import { CurrentUser } from './current-user.decorator';
 import { User } from '../users/entities/user.entity';
 import { JwtRefreshAuthGuard } from './guards/jwt-refresh-auth.guard';
@@ -15,22 +12,13 @@ import { JwtRefreshAuthGuard } from './guards/jwt-refresh-auth.guard';
 @Controller('auth')
 export class AuthController {
   constructor(
-    private authService: AuthService,
     private jwtAuthService: JwtAuthService,
-    private microsoftStrategy: MicrosoftStrategy,
-    private usersService: UsersService,
-    private configService: ConfigService
+    private usersService: UsersService
   ) {}
 
   @Get('login')
   @UseGuards(MicrosoftAuthGuard)
   login() {}
-
-  @Get('')
-  @UseGuards(JwtAuthGuard)
-  userDetails(@CurrentUser() user: User) {
-    return user.toPublic();
-  }
 
   @Get('microsoft')
   @UseGuards(MicrosoftAuthGuard)
