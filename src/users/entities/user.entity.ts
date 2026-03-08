@@ -30,6 +30,10 @@ export class User {
   @Column({ default: 'GUEST' })
   userRole: Role;
 
+  // TODO: This should be it's own entity with group types ('class', 'staff', ...)
+  @Column({ nullable: true })
+  group?: string;
+
   @Column({ type: 'varchar', length: 255, nullable: true })
   refreshToken: string | null;
 
@@ -39,6 +43,7 @@ export class User {
       email: this.email,
       firstName: this.firstName ?? null,
       lastName: this.lastName ?? null,
+      group: this.group ?? null,
       lastLogin: this.lastLogin ? this.lastLogin.toISOString() : null,
       userRole: this.userRole,
       disabledAt: this.disabledAt ?? null,

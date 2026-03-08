@@ -1,10 +1,10 @@
-import { Body, Controller, Get, Post, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { User } from './entities/user.entity';
 import { UserAdminGuard } from './guards/user-admin-guard';
 import { UsersService } from './users.service';
-import { CreateUserRequestDto } from './dto';
+import { CreateUserRequestDto, EditUsersActivationRequestDto, EditUsersRequestDto } from './dto';
 
 @Controller('users')
 export class UsersController {
@@ -37,5 +37,17 @@ export class UsersController {
       email: body.email,
       userRole: body.userRole ?? 'ETUDIANT',
     });
+  }
+
+  @Put('')
+  @UseGuards(JwtAuthGuard, UserAdminGuard)
+  async editUsers(@CurrentUser() user: User, @Body() body: EditUsersRequestDto) {
+    return await this.usersService.editUsersByEmail(body.users, body.group, body.userRole, user);
+  }
+
+  @Put('disable')
+  @UseGuards(JwtAuthGuard, UserAdminGuard)
+  async disableUsers(@CurrentUser() user: User, @Body() body: EditUsersActivationRequestDto) {
+    return await this.usersService.disableUsersByEmail(body.users, user);
   }
 }
