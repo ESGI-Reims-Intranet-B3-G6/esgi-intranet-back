@@ -1,5 +1,6 @@
-import { Column, DeleteDateColumn, Entity, PrimaryColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 import type { Role } from '../types/role.type';
+import { News } from '../../news/entities/news.entity';
 
 @Entity('users')
 export class User {
@@ -37,6 +38,9 @@ export class User {
   @Column({ type: 'varchar', length: 255, nullable: true })
   refreshToken: string | null;
 
+  @OneToMany(() => News, (news) => news.user)
+  news: News[];
+
   toPublic() {
     return {
       id: this.id ?? null,
@@ -47,6 +51,16 @@ export class User {
       lastLogin: this.lastLogin ? this.lastLogin.toISOString() : null,
       userRole: this.userRole,
       disabledAt: this.disabledAt ?? null,
+    };
+  }
+
+  toPublicRestricted() {
+    return {
+      id: this.id ?? null,
+      email: this.email,
+      firstName: this.firstName ?? null,
+      lastName: this.lastName ?? null,
+      group: this.group ?? null,
     };
   }
 }
